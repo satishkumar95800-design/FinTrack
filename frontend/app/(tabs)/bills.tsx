@@ -78,14 +78,24 @@ export default function Bills() {
         category: 'Bills',
         reminderSet: false,
         source: 'manual',
+        isRecurring: newBill.isRecurring,
+        recurringDay: newBill.isRecurring ? newBill.recurringDay : null,
+        parentBillId: null,
       });
       setModalVisible(false);
       setNewBill({
         name: '',
         amount: '',
         dueDate: format(new Date(), 'yyyy-MM-dd'),
+        isRecurring: false,
+        recurringDay: new Date().getDate(),
       });
-      Alert.alert('Success', 'Bill added successfully');
+      Alert.alert(
+        'Success',
+        newBill.isRecurring 
+          ? 'Recurring bill added successfully! It will auto-generate every month.' 
+          : 'Bill added successfully'
+      );
     } catch (error) {
       Alert.alert('Error', 'Failed to add bill');
     }
