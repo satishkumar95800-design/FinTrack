@@ -14,6 +14,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 
 export default function Settings() {
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
   const handleExport = () => {
     Alert.alert(
       'Export Data',
@@ -28,10 +33,72 @@ export default function Settings() {
     );
   };
 
+  const handlePasswordReset = () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please fill all fields',
+      });
+      return;
+    }
+
+    if (newPassword !== confirmPassword) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'New passwords do not match',
+      });
+      return;
+    }
+
+    if (newPassword.length < 6) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Password must be at least 6 characters',
+      });
+      return;
+    }
+
+    // Simulate password reset
+    Toast.show({
+      type: 'success',
+      text1: 'Success',
+      text2: 'Password changed successfully',
+    });
+    setShowPasswordModal(false);
+    setCurrentPassword('');
+    setNewPassword('');
+    setConfirmPassword('');
+  };
+
+  const handleLogout = () => {
+    Alert.alert(
+      'Logout',
+      'Are you sure you want to logout?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Logout',
+          style: 'destructive',
+          onPress: () => {
+            Toast.show({
+              type: 'success',
+              text1: 'Logged Out',
+              text2: 'You have been logged out successfully',
+            });
+            // Here you would typically clear user session/token
+          },
+        },
+      ]
+    );
+  };
+
   const handleAbout = () => {
     Alert.alert(
       'About',
-      'Budget Planner v1.0\n\nA smart budget planning app with AI-powered features.'
+      'FinTrack v1.0\n\nA smart budget planning app with AI-powered features.'
     );
   };
 
