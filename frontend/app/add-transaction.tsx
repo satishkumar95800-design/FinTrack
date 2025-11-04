@@ -205,13 +205,24 @@ export default function AddTransaction() {
           {/* Date */}
           <View style={styles.section}>
             <Text style={styles.label}>Date</Text>
-            <TextInput
-              style={styles.input}
-              value={date}
-              onChangeText={setDate}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor="#CCC"
-            />
+            <TouchableOpacity
+              style={styles.dateButton}
+              onPress={() => setShowDatePicker(true)}
+            >
+              <MaterialCommunityIcons name="calendar" size={20} color="#6C63FF" />
+              <Text style={styles.dateButtonText}>
+                {format(date, 'MMM dd, yyyy')}
+              </Text>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+                onChange={onDateChange}
+                maximumDate={new Date()}
+              />
+            )}
           </View>
         </ScrollView>
 
