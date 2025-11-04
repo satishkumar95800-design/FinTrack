@@ -41,12 +41,20 @@ export default function AddTransaction() {
 
   const handleSubmit = async () => {
     if (!amount || parseFloat(amount) <= 0) {
-      Alert.alert('Error', 'Please enter a valid amount');
+      Toast.show({
+        type: 'error',
+        text1: 'Invalid Amount',
+        text2: 'Please enter a valid amount',
+      });
       return;
     }
 
     if (!category) {
-      Alert.alert('Error', 'Please select a category');
+      Toast.show({
+        type: 'error',
+        text1: 'No Category',
+        text2: 'Please select a category',
+      });
       return;
     }
 
@@ -56,14 +64,29 @@ export default function AddTransaction() {
         amount: parseFloat(amount),
         category,
         description,
-        date,
+        date: format(date, 'yyyy-MM-dd'),
       });
 
-      Alert.alert('Success', 'Transaction added successfully', [
-        { text: 'OK', onPress: () => router.back() },
-      ]);
+      Toast.show({
+        type: 'success',
+        text1: 'Success!',
+        text2: 'Transaction added successfully',
+      });
+      
+      setTimeout(() => router.back(), 1000);
     } catch (error) {
-      Alert.alert('Error', 'Failed to add transaction');
+      Toast.show({
+        type: 'error',
+        text1: 'Failed',
+        text2: 'Could not add transaction. Please try again.',
+      });
+    }
+  };
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(Platform.OS === 'ios');
+    if (selectedDate) {
+      setDate(selectedDate);
     }
   };
 
