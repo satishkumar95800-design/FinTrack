@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import axios from 'axios';
 
 // Use /api prefix which is redirected to port 8001 by ingress
-const API_URL = '/api';
+const API_URL = '';
 
 interface Transaction {
   _id?: string;
