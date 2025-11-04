@@ -105,9 +105,10 @@ export default function Dashboard() {
       .reduce((sum, b) => sum + b.amount, 0);
     
     const totalExpense = expense + unpaidBills;
+    const amountRequired = amountRequiredData?.amountRequired || totalExpense;
     
     setSummary({ 
-      income, 
+      amountRequired, 
       expense: totalExpense, 
       balance: income - totalExpense,
       unpaidBills 
