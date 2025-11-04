@@ -23,6 +23,8 @@ export default function Bills() {
     name: '',
     amount: '',
     dueDate: format(new Date(), 'yyyy-MM-dd'),
+    isRecurring: false,
+    recurringDay: new Date().getDate(),
   });
 
   useEffect(() => {
