@@ -72,6 +72,17 @@ export default function Dashboard() {
     await fetchTransactions();
     await fetchCategories();
     await fetchBills();
+    await fetchAmountRequired();
+  };
+
+  const fetchAmountRequired = async () => {
+    try {
+      const axios = (await import('axios')).default;
+      const response = await axios.get('/api/analytics/amount-required');
+      setAmountRequiredData(response.data);
+    } catch (error) {
+      console.error('Error fetching amount required:', error);
+    }
   };
 
   const onRefresh = async () => {
