@@ -20,6 +20,7 @@ export default function Analytics() {
     expense: 0,
     balance: 0,
   });
+  const [pocketMoney, setPocketMoney] = useState<any>(null);
   const [categoryData, setCategoryData] = useState<any[]>([]);
   const [monthlyData, setMonthlyData] = useState<any[]>([]);
 
