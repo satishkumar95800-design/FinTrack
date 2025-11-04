@@ -160,24 +160,12 @@ export default function Analytics() {
             </View>
 
             <View style={styles.summaryCard}>
-              <MaterialCommunityIcons
-                name="trending-down"
-                size={32}
-                color="#F44336"
-              />
-              <Text style={styles.summaryLabel}>Total Expense</Text>
-              <Text style={[styles.summaryValue, { color: '#F44336' }]}>
-                ₹{summary.expense.toFixed(2)}
+              <MaterialCommunityIcons name="wallet" size={32} color="#6C63FF" />
+              <Text style={styles.summaryLabel}>Net Balance</Text>
+              <Text style={[styles.summaryValue, { color: '#6C63FF' }]}>
+                ₹{summary.balance.toFixed(2)}
               </Text>
             </View>
-          </View>
-
-          <View style={[styles.summaryCard, { marginTop: 12 }]}>
-            <MaterialCommunityIcons name="wallet" size={32} color="#6C63FF" />
-            <Text style={styles.summaryLabel}>Net Balance</Text>
-            <Text style={[styles.summaryValue, { color: '#6C63FF' }]}>
-              ₹{summary.balance.toFixed(2)}
-            </Text>
           </View>
         </View>
 
