@@ -142,11 +142,14 @@ backend:
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "POST /api/transactions tested successfully. Need to test GET, PUT, DELETE"
+      - working: true
+        agent: "testing"
+        comment: "All CRUD operations tested successfully: GET (list & single), POST, PUT, DELETE. Created transaction ID 6909f7ff5eebf2028d00c8ff, updated amount from 45.50 to 55.75, and deleted successfully. All endpoints working correctly."
         
   - task: "Receipt OCR with AI (OpenAI GPT-4o-mini)"
     implemented: true
