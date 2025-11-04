@@ -139,7 +139,7 @@ export default function Dashboard() {
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
       <View style={styles.header}>
-        <Text style={styles.headerTitle}>Budget Planner</Text>
+        <Text style={styles.headerTitle}>FinTrack</Text>
         <TouchableOpacity
           style={styles.iconButton}
           onPress={() => router.push('/camera')}
