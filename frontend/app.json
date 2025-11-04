@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "frontend",
-    "slug": "frontend",
+    "name": "FinTrack",
+    "slug": "fintrack",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "frontend",
+    "scheme": "fintrack",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
     "ios": {
