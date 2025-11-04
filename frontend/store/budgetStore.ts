@@ -141,8 +141,12 @@ export const useBudgetStore = create<BudgetStore>((set, get) => ({
   
   deleteTransaction: async (id: string) => {
     try {
-      await axios.delete(`${API_URL}/api/transactions/${id}`);
+      console.log('Deleting transaction with ID:', id);
+      console.log('API URL:', `${API_URL}/api/transactions/${id}`);
+      const response = await axios.delete(`${API_URL}/api/transactions/${id}`);
+      console.log('Delete response:', response.data);
       set({ transactions: get().transactions.filter(t => t._id !== id) });
+      return response.data;
     } catch (error) {
       console.error('Error deleting transaction:', error);
       throw error;
