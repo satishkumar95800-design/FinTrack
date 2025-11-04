@@ -481,6 +481,61 @@ async def get_monthly_chart():
     
     return {"data": chart_data}
 
+@app.get("/api/analytics/amount-required")
+async def get_amount_required():
+    """Calculate amount required: recurring bills (unpaid) + current month expenses - paid bills"""
+    try:
+        current_month = datetime.utcnow().strftime("%Y-%m")
+        
+        # Get current month transactions (expenses only)
+        transactions = await transactions_collection.find({
+            "date": {"$regex": f"^{current_month}"},
+            "type": "expense"
+        }).to_list(length=10000)
+        
+        current_month_expenses = sum(t["amount"] for t in transactions)
+        
+        # Get all bills for current month
+        bills = await bills_collection.find({
+            "dueDate": {"$regex": f"^{current_month}"}
+        }).to_list(length=1000)
+        
+        unpaid_bills = sum(b["amount"] for b in bills if not b.get("isPaid", False))
+        paid_bills = sum(b["amount"] for b in bills if b.get("isPaid", False))
+        
+        # Get recurring bills (parent bills)
+        recurring_bills = await bills_collection.find({
+            "isRecurring": True,
+            "parentBillId": None
+        }).to_list(length=1000)
+        
+        recurring_unpaid = 0
+        for rb in recurring_bills:
+            # Check if this month's instance is paid
+            month_bill = await bills_collection.find_one({
+                "parentBillId": str(rb["_id"]),
+                "dueDate": {"$regex": f"^{current_month}"}
+            })
+            if month_bill and not month_bill.get("isPaid", False):
+                recurring_unpaid += month_bill["amount"]
+            elif not month_bill:
+                # Not yet generated for this month, count it
+                recurring_unpaid += rb["amount"]
+        
+        # Amount Required = Recurring Bills (unpaid) + Current Month Expenses - Paid Bills
+        amount_required = current_month_expenses + unpaid_bills
+        
+        return {
+            "amountRequired": amount_required,
+            "currentMonthExpenses": current_month_expenses,
+            "unpaidBills": unpaid_bills,
+            "paidBills": paid_bills,
+            "recurringUnpaid": recurring_unpaid,
+            "currentMonth": current_month
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Amount required calculation failed: {str(e)}")
+
 @app.get("/api/analytics/pocket-money")
 async def get_pocket_money():
     """Calculate pocket money: income - recurring bills - current month bills - other expenses"""
