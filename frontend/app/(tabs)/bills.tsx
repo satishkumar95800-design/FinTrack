@@ -52,13 +52,28 @@ export default function Bills() {
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     Alert.alert('Delete Bill', 'Are you sure you want to delete this bill?', [
       { text: 'Cancel', style: 'cancel' },
       {
         text: 'Delete',
         style: 'destructive',
-        onPress: () => deleteBill(id),
+        onPress: async () => {
+          try {
+            await deleteBill(id);
+            Toast.show({
+              type: 'success',
+              text1: 'Deleted',
+              text2: 'Bill deleted successfully',
+            });
+          } catch (error) {
+            Toast.show({
+              type: 'error',
+              text1: 'Error',
+              text2: 'Failed to delete bill',
+            });
+          }
+        },
       },
     ]);
   };
