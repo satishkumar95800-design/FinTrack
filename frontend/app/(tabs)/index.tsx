@@ -30,9 +30,11 @@ export default function Dashboard() {
   const {
     transactions,
     categories,
+    bills,
     loading,
     fetchTransactions,
     fetchCategories,
+    fetchBills,
     deleteTransaction,
     parseSMS,
     addTransaction,
@@ -45,6 +47,7 @@ export default function Dashboard() {
     income: 0,
     expense: 0,
     balance: 0,
+    unpaidBills: 0,
   });
 
   useEffect(() => {
