@@ -125,19 +125,37 @@ export default function Analytics() {
           </View>
         )}
 
+        {/* Income Card */}
+        <View style={styles.incomeSection}>
+          <View style={styles.incomeCard}>
+            <MaterialCommunityIcons
+              name="trending-up"
+              size={40}
+              color="#4CAF50"
+            />
+            <View style={styles.incomeContent}>
+              <Text style={styles.incomeLabel}>Total Income</Text>
+              <Text style={styles.incomeAmount}>
+                ₹{summary.income.toFixed(2)}
+              </Text>
+              <Text style={styles.incomeSubtext}>Current month earnings</Text>
+            </View>
+          </View>
+        </View>
+
         {/* Summary */}
         <View style={styles.summarySection}>
           <Text style={styles.sectionTitle}>Financial Overview</Text>
           <View style={styles.summaryCards}>
             <View style={styles.summaryCard}>
               <MaterialCommunityIcons
-                name="trending-up"
+                name="trending-down"
                 size={32}
-                color="#4CAF50"
+                color="#F44336"
               />
-              <Text style={styles.summaryLabel}>Total Income</Text>
-              <Text style={[styles.summaryValue, { color: '#4CAF50' }]}>
-                ₹{summary.income.toFixed(2)}
+              <Text style={styles.summaryLabel}>Total Expense</Text>
+              <Text style={[styles.summaryValue, { color: '#F44336' }]}>
+                ₹{summary.expense.toFixed(2)}
               </Text>
             </View>
 
