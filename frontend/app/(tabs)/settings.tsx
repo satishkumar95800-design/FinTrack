@@ -1,0 +1,213 @@
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
+
+export default function Settings() {
+  const handleExport = () => {
+    Alert.alert(
+      'Export Data',
+      'This feature would export your data to CSV or PDF format.'
+    );
+  };
+
+  const handleBackup = () => {
+    Alert.alert(
+      'Backup Data',
+      'This feature would backup your data to cloud storage.'
+    );
+  };
+
+  const handleAbout = () => {
+    Alert.alert(
+      'About',
+      'Budget Planner v1.0\n\nA smart budget planning app with AI-powered features.'
+    );
+  };
+
+  return (
+    <SafeAreaView style={styles.container} edges={['top']}>
+      <View style={styles.header}>
+        <Text style={styles.headerTitle}>Settings</Text>
+      </View>
+
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Data Management</Text>
+
+          <TouchableOpacity style={styles.settingItem} onPress={handleExport}>
+            <View style={styles.settingIconContainer}>
+              <MaterialCommunityIcons
+                name="download"
+                size={24}
+                color="#6C63FF"
+              />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingTitle}>Export Data</Text>
+              <Text style={styles.settingDescription}>
+                Export transactions to CSV or PDF
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color="#CCC"
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.settingItem} onPress={handleBackup}>
+            <View style={styles.settingIconContainer}>
+              <MaterialCommunityIcons
+                name="cloud-upload"
+                size={24}
+                color="#6C63FF"
+              />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingTitle}>Backup Data</Text>
+              <Text style={styles.settingDescription}>
+                Backup your data to cloud storage
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color="#CCC"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>About</Text>
+
+          <TouchableOpacity style={styles.settingItem} onPress={handleAbout}>
+            <View style={styles.settingIconContainer}>
+              <MaterialCommunityIcons
+                name="information"
+                size={24}
+                color="#6C63FF"
+              />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingTitle}>About App</Text>
+              <Text style={styles.settingDescription}>Version 1.0</Text>
+            </View>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color="#CCC"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.infoCard}>
+          <MaterialCommunityIcons name="lightbulb" size={32} color="#FF9800" />
+          <Text style={styles.infoTitle}>Features</Text>
+          <Text style={styles.infoText}>
+            • AI-powered receipt scanning{' \n'}
+            • SMS transaction parsing{' \n'}
+            • Email bill scanning{' \n'}
+            • UPI payment tracking{' \n'}
+            • Category-based analytics{' \n'}
+            • Bill payment reminders
+          </Text>
+        </View>
+      </ScrollView>
+    </SafeAreaView>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#F5F7FA',
+  },
+  header: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    backgroundColor: '#FFF',
+    borderBottomWidth: 1,
+    borderBottomColor: '#EEE',
+  },
+  headerTitle: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  scrollView: {
+    flex: 1,
+  },
+  section: {
+    marginTop: 20,
+  },
+  sectionTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#999',
+    paddingHorizontal: 20,
+    marginBottom: 12,
+    textTransform: 'uppercase',
+  },
+  settingItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F5F7FA',
+  },
+  settingIconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#F0EEFF',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 12,
+  },
+  settingContent: {
+    flex: 1,
+  },
+  settingTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 4,
+  },
+  settingDescription: {
+    fontSize: 14,
+    color: '#999',
+  },
+  infoCard: {
+    backgroundColor: '#FFF',
+    margin: 20,
+    padding: 20,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.05,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  infoTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#333',
+    marginTop: 12,
+    marginBottom: 12,
+  },
+  infoText: {
+    fontSize: 14,
+    color: '#666',
+    lineHeight: 22,
+  },
+});
