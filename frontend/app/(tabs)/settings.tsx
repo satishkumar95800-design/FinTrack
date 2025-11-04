@@ -207,6 +207,30 @@ export default function Settings() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>About</Text>
 
+          <TouchableOpacity 
+            style={styles.settingItem} 
+            onPress={() => router.push('/privacy-policy' as any)}
+          >
+            <View style={styles.settingIconContainer}>
+              <MaterialCommunityIcons
+                name="shield-check"
+                size={24}
+                color="#6C63FF"
+              />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingTitle}>Privacy Policy</Text>
+              <Text style={styles.settingDescription}>
+                How we protect your data
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color="#CCC"
+            />
+          </TouchableOpacity>
+
           <TouchableOpacity style={styles.settingItem} onPress={handleAbout}>
             <View style={styles.settingIconContainer}>
               <MaterialCommunityIcons
@@ -217,7 +241,7 @@ export default function Settings() {
             </View>
             <View style={styles.settingContent}>
               <Text style={styles.settingTitle}>About App</Text>
-              <Text style={styles.settingDescription}>Version 1.0</Text>
+              <Text style={styles.settingDescription}>Version 1.0.0</Text>
             </View>
             <MaterialCommunityIcons
               name="chevron-right"
