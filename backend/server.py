@@ -324,14 +324,61 @@ async def parse_email(email: EmailMessage):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Email parsing failed: {str(e)}")
 
+# Helper function to generate recurring bills
+async def generate_recurring_bills():
+    """Auto-generate recurring bills for the current month"""
+    try:
+        # Find all recurring bills (parent bills)
+        recurring_bills = await bills_collection.find({"isRecurring": True, "parentBillId": None}).to_list(length=1000)
+        
+        current_month = datetime.utcnow().strftime("%Y-%m")
+        
+        for parent_bill in recurring_bills:
+            # Check if bill for this month already exists
+            existing_bill = await bills_collection.find_one({
+                "parentBillId": str(parent_bill["_id"]),
+                "dueDate": {"$regex": f"^{current_month}"}
+            })
+            
+            if not existing_bill:
+                # Generate new bill for this month
+                recurring_day = parent_bill.get("recurringDay", 1)
+                due_date = f"{current_month}-{recurring_day:02d}"
+                
+                new_bill = {
+                    "name": parent_bill["name"],
+                    "amount": parent_bill["amount"],
+                    "dueDate": due_date,
+                    "isPaid": False,
+                    "category": parent_bill["category"],
+                    "reminderSet": False,
+                    "source": "recurring",
+                    "isRecurring": False,
+                    "recurringDay": None,
+                    "parentBillId": str(parent_bill["_id"]),
+                    "createdAt": datetime.utcnow().isoformat()
+                }
+                await bills_collection.insert_one(new_bill)
+    except Exception as e:
+        print(f"Error generating recurring bills: {str(e)}")
+
 # Bills
 @app.get("/api/bills")
 async def get_bills(status: Optional[str] = None):
+    # Auto-generate recurring bills for current month
+    await generate_recurring_bills()
+    
     query = {}
     if status == "unpaid":
         query["isPaid"] = False
     elif status == "paid":
         query["isPaid"] = True
+    
+    # Exclude parent recurring bills from the list (only show generated instances)
+    query["$or"] = [
+        {"isRecurring": False},
+        {"isRecurring": True, "parentBillId": None}  # Include parent for management
+    ]
     
     bills = await bills_collection.find(query).sort("dueDate", 1).to_list(length=1000)
     return {"bills": [serialize_doc(b) for b in bills]}
