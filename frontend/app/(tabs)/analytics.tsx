@@ -26,7 +26,17 @@ export default function Analytics() {
 
   useEffect(() => {
     calculateAnalytics();
+    fetchPocketMoney();
   }, [transactions]);
+
+  const fetchPocketMoney = async () => {
+    try {
+      const response = await axios.get('/api/analytics/pocket-money');
+      setPocketMoney(response.data);
+    } catch (error) {
+      console.error('Error fetching pocket money:', error);
+    }
+  };
 
   const calculateAnalytics = () => {
     // Calculate totals
