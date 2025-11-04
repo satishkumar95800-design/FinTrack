@@ -16,6 +16,7 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { format } from 'date-fns';
 import * as SMS from 'expo-sms';
 import * as Notifications from 'expo-notifications';
+import Toast from 'react-native-toast-message';
 
 // Configure notifications
 Notifications.setNotificationHandler({
