@@ -60,7 +60,7 @@
       [
         "expo-camera",
         {
-          "cameraPermission": "Allow Budget Planner to access your camera to scan receipts"
+          "cameraPermission": "FinTrack needs camera access to scan receipts and extract transaction details using AI"
         }
       ],
       [
