@@ -69,6 +69,7 @@ export default function Dashboard() {
   const loadData = async () => {
     await fetchTransactions();
     await fetchCategories();
+    await fetchBills();
   };
 
   const onRefresh = async () => {
@@ -84,7 +85,20 @@ export default function Dashboard() {
     const expense = transactions
       .filter((t) => t.type === 'expense')
       .reduce((sum, t) => sum + t.amount, 0);
-    setSummary({ income, expense, balance: income - expense });
+    
+    // Add unpaid bills to expense
+    const unpaidBills = bills
+      .filter((b) => !b.isPaid)
+      .reduce((sum, b) => sum + b.amount, 0);
+    
+    const totalExpense = expense + unpaidBills;
+    
+    setSummary({ 
+      income, 
+      expense: totalExpense, 
+      balance: income - totalExpense,
+      unpaidBills 
+    });
   };
 
   const handleDelete = (id: string) => {
