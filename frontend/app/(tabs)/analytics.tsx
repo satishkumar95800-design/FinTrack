@@ -10,6 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useBudgetStore } from '../../store/budgetStore';
 import { BarChart, PieChart } from 'react-native-gifted-charts';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import axios from 'axios';
 
 const screenWidth = Dimensions.get('window').width;
 
