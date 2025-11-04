@@ -481,6 +481,63 @@ async def get_monthly_chart():
     
     return {"data": chart_data}
 
+@app.get("/api/analytics/pocket-money")
+async def get_pocket_money():
+    """Calculate pocket money: income - recurring bills - current month bills - other expenses"""
+    try:
+        current_month = datetime.utcnow().strftime("%Y-%m")
+        current_date = datetime.utcnow().date()
+        days_in_month = (datetime.utcnow().replace(day=28) + timedelta(days=4)).replace(day=1) - timedelta(days=1)
+        total_days = days_in_month.day
+        days_passed = current_date.day
+        days_remaining = total_days - days_passed + 1
+        
+        # Get total income for current month
+        transactions = await transactions_collection.find({
+            "date": {"$regex": f"^{current_month}"}
+        }).to_list(length=10000)
+        
+        total_income = sum(t["amount"] for t in transactions if t["type"] == "income")
+        total_expense = sum(t["amount"] for t in transactions if t["type"] == "expense")
+        
+        # Get current month bills (paid and unpaid)
+        bills = await bills_collection.find({
+            "dueDate": {"$regex": f"^{current_month}"}
+        }).to_list(length=1000)
+        
+        total_bills = sum(b["amount"] for b in bills)
+        paid_bills = sum(b["amount"] for b in bills if b.get("isPaid", False))
+        unpaid_bills = total_bills - paid_bills
+        
+        # Get recurring bills amount (estimate for future months)
+        recurring_bills = await bills_collection.find({
+            "isRecurring": True,
+            "parentBillId": None
+        }).to_list(length=1000)
+        
+        total_recurring = sum(b["amount"] for b in recurring_bills)
+        
+        # Calculate pocket money
+        pocket_money = total_income - total_expense - unpaid_bills
+        
+        # Calculate daily spendable amount
+        daily_spendable = pocket_money / days_remaining if days_remaining > 0 else 0
+        
+        return {
+            "pocketMoney": max(0, pocket_money),
+            "dailySpendable": max(0, daily_spendable),
+            "daysRemaining": days_remaining,
+            "totalIncome": total_income,
+            "totalExpense": total_expense,
+            "totalBills": total_bills,
+            "paidBills": paid_bills,
+            "unpaidBills": unpaid_bills,
+            "recurringBillsMonthly": total_recurring,
+            "currentMonth": current_month
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Pocket money calculation failed: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
