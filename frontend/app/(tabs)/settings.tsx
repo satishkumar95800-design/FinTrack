@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
+import { router } from 'expo-router';
 
 export default function Settings() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
