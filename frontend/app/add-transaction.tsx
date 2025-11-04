@@ -362,4 +362,19 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  dateButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF',
+    borderRadius: 12,
+    padding: 16,
+    borderWidth: 1,
+    borderColor: '#EEE',
+    gap: 12,
+  },
+  dateButtonText: {
+    fontSize: 16,
+    color: '#333',
+    flex: 1,
+  },
 });
