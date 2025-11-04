@@ -416,4 +416,40 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: '#999',
   },
+  incomeSection: {
+    padding: 20,
+    paddingBottom: 0,
+  },
+  incomeCard: {
+    flexDirection: 'row',
+    backgroundColor: '#E8F5E9',
+    padding: 20,
+    borderRadius: 16,
+    alignItems: 'center',
+    shadowColor: '#4CAF50',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  incomeContent: {
+    marginLeft: 16,
+    flex: 1,
+  },
+  incomeLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2E7D32',
+    marginBottom: 8,
+  },
+  incomeAmount: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: '#4CAF50',
+    marginBottom: 4,
+  },
+  incomeSubtext: {
+    fontSize: 12,
+    color: '#66BB6A',
+  },
 });
