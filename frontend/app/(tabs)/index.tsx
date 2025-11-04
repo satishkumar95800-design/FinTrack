@@ -202,15 +202,15 @@ export default function Dashboard() {
       >
         {/* Summary Cards */}
         <View style={styles.summaryContainer}>
-          <View style={[styles.summaryCard, { backgroundColor: '#E8F5E9' }]}>
+          <View style={[styles.summaryCard, { backgroundColor: '#FFF3E0' }]}>
             <MaterialCommunityIcons
-              name="arrow-down-circle"
+              name="cash-multiple"
               size={32}
-              color="#4CAF50"
+              color="#FF9800"
             />
-            <Text style={styles.summaryLabel}>Income</Text>
-            <Text style={[styles.summaryAmount, { color: '#4CAF50' }]}>
-              ₹{summary.income.toFixed(2)}
+            <Text style={styles.summaryLabel}>Amount Required</Text>
+            <Text style={[styles.summaryAmount, { color: '#FF9800' }]}>
+              ₹{summary.amountRequired.toFixed(2)}
             </Text>
           </View>
 
