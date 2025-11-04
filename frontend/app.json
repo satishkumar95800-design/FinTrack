@@ -33,6 +33,19 @@
           "resizeMode": "contain",
           "backgroundColor": "#000"
         }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow Budget Planner to access your camera to scan receipts"
+        }
+      ],
+      [
+        "expo-notifications",
+        {
+          "icon": "./assets/images/notification-icon.png",
+          "color": "#6C63FF"
+        }
       ]
     ],
     "experiments": {
