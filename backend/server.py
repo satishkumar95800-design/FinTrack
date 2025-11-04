@@ -53,6 +53,9 @@ class Bill(BaseModel):
     category: str = "Credit Card"
     reminderSet: bool = False
     source: str = "manual"  # manual, email, sms
+    isRecurring: bool = False  # If true, auto-generate monthly
+    recurringDay: Optional[int] = None  # Day of month (1-31) for recurring bills
+    parentBillId: Optional[str] = None  # Reference to original recurring bill
     createdAt: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
 
 class UPIPayment(BaseModel):
