@@ -294,6 +294,51 @@ export default function Bills() {
                 placeholderTextColor="#CCC"
               />
 
+              <View style={styles.recurringContainer}>
+                <View style={styles.recurringLabelContainer}>
+                  <MaterialCommunityIcons name="repeat" size={20} color="#6C63FF" />
+                  <Text style={styles.recurringLabel}>Recurring Monthly Bill</Text>
+                </View>
+                <TouchableOpacity
+                  style={[
+                    styles.toggle,
+                    newBill.isRecurring && styles.toggleActive,
+                  ]}
+                  onPress={() =>
+                    setNewBill({ ...newBill, isRecurring: !newBill.isRecurring })
+                  }
+                >
+                  <View
+                    style={[
+                      styles.toggleThumb,
+                      newBill.isRecurring && styles.toggleThumbActive,
+                    ]}
+                  />
+                </TouchableOpacity>
+              </View>
+
+              {newBill.isRecurring && (
+                <View>
+                  <Text style={styles.inputLabel}>Recurring Day of Month</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={newBill.recurringDay.toString()}
+                    onChangeText={(text) =>
+                      setNewBill({
+                        ...newBill,
+                        recurringDay: parseInt(text) || 1,
+                      })
+                    }
+                    keyboardType="number-pad"
+                    placeholder="1-31"
+                    placeholderTextColor="#CCC"
+                  />
+                  <Text style={styles.helperText}>
+                    This bill will auto-generate on day {newBill.recurringDay} of every month
+                  </Text>
+                </View>
+              )}
+
               <TouchableOpacity
                 style={styles.submitButton}
                 onPress={handleAddBill}
