@@ -1,5 +1,6 @@
 import { Stack } from 'expo-router';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import Toast from 'react-native-toast-message';
 
 export default function Layout() {
   return (
@@ -10,6 +11,7 @@ export default function Layout() {
         <Stack.Screen name="camera" options={{ presentation: 'fullScreenModal', title: 'Scan Receipt' }} />
         <Stack.Screen name="upi-payments" options={{ presentation: 'modal', title: 'UPI Payments' }} />
       </Stack>
+      <Toast />
     </GestureHandlerRootView>
   );
 }
