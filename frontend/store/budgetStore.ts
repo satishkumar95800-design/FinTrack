@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import axios from 'axios';
 
-const API_URL = process.env.EXPO_PUBLIC_BACKEND_URL || 'http://localhost:8001';
+// Use /api prefix which is redirected to port 8001 by ingress
+const API_URL = '/api';
 
 interface Transaction {
   _id?: string;
