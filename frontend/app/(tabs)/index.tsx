@@ -57,7 +57,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     calculateSummary();
-  }, [transactions]);
+  }, [transactions, bills]);
 
   const requestNotificationPermissions = async () => {
     const { status } = await Notifications.requestPermissionsAsync();
