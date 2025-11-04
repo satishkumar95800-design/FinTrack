@@ -96,6 +96,35 @@ export default function Analytics() {
       </View>
 
       <ScrollView style={styles.scrollView}>
+        {/* Pocket Money - Prominent Display */}
+        {pocketMoney && (
+          <View style={styles.pocketMoneySection}>
+            <View style={styles.pocketMoneyCard}>
+              <View style={styles.pocketMoneyHeader}>
+                <MaterialCommunityIcons name="wallet-outline" size={40} color="#FFF" />
+                <Text style={styles.pocketMoneyLabel}>Pocket Money</Text>
+              </View>
+              <Text style={styles.pocketMoneyAmount}>
+                ₹{pocketMoney.pocketMoney.toFixed(2)}
+              </Text>
+              <Text style={styles.pocketMoneySubtext}>
+                Available to spend this month
+              </Text>
+            </View>
+
+            <View style={styles.dailySpendableCard}>
+              <MaterialCommunityIcons name="calendar-today" size={32} color="#FF9800" />
+              <Text style={styles.dailySpendableLabel}>Daily Spendable</Text>
+              <Text style={styles.dailySpendableAmount}>
+                ₹{pocketMoney.dailySpendable.toFixed(2)}
+              </Text>
+              <Text style={styles.dailySpendableSubtext}>
+                For next {pocketMoney.daysRemaining} days
+              </Text>
+            </View>
+          </View>
+        )}
+
         {/* Summary */}
         <View style={styles.summarySection}>
           <Text style={styles.sectionTitle}>Financial Overview</Text>
