@@ -45,11 +45,12 @@ export default function Dashboard() {
 
   const [refreshing, setRefreshing] = useState(false);
   const [summary, setSummary] = useState({
-    income: 0,
+    amountRequired: 0,
     expense: 0,
     balance: 0,
     unpaidBills: 0,
   });
+  const [amountRequiredData, setAmountRequiredData] = useState<any>(null);
 
   useEffect(() => {
     loadData();
