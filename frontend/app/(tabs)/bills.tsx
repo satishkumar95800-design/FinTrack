@@ -525,4 +525,50 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  recurringContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 16,
+    backgroundColor: '#F0EEFF',
+    padding: 16,
+    borderRadius: 12,
+  },
+  recurringLabelContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  recurringLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#333',
+  },
+  toggle: {
+    width: 50,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: '#CCC',
+    justifyContent: 'center',
+    padding: 2,
+  },
+  toggleActive: {
+    backgroundColor: '#6C63FF',
+  },
+  toggleThumb: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#FFF',
+    alignSelf: 'flex-start',
+  },
+  toggleThumbActive: {
+    alignSelf: 'flex-end',
+  },
+  helperText: {
+    fontSize: 12,
+    color: '#6C63FF',
+    marginTop: 8,
+    fontStyle: 'italic',
+  },
 });
