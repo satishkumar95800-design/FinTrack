@@ -156,6 +156,55 @@ export default function Settings() {
         </View>
 
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Security</Text>
+
+          <TouchableOpacity 
+            style={styles.settingItem} 
+            onPress={() => setShowPasswordModal(true)}
+          >
+            <View style={styles.settingIconContainer}>
+              <MaterialCommunityIcons
+                name="lock-reset"
+                size={24}
+                color="#6C63FF"
+              />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingTitle}>Change Password</Text>
+              <Text style={styles.settingDescription}>
+                Update your account password
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color="#CCC"
+            />
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
+            <View style={styles.settingIconContainer}>
+              <MaterialCommunityIcons
+                name="logout"
+                size={24}
+                color="#FF6B6B"
+              />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={[styles.settingTitle, { color: '#FF6B6B' }]}>Logout</Text>
+              <Text style={styles.settingDescription}>
+                Sign out of your account
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color="#CCC"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
           <Text style={styles.sectionTitle}>About</Text>
 
           <TouchableOpacity style={styles.settingItem} onPress={handleAbout}>
