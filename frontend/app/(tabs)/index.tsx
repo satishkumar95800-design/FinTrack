@@ -102,7 +102,7 @@ export default function Dashboard() {
     });
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     Alert.alert(
       'Delete Transaction',
       'Are you sure you want to delete this transaction?',
@@ -111,7 +111,22 @@ export default function Dashboard() {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: () => deleteTransaction(id),
+          onPress: async () => {
+            try {
+              await deleteTransaction(id);
+              Toast.show({
+                type: 'success',
+                text1: 'Deleted',
+                text2: 'Transaction deleted successfully',
+              });
+            } catch (error) {
+              Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: 'Failed to delete transaction',
+              });
+            }
+          },
         },
       ]
     );
