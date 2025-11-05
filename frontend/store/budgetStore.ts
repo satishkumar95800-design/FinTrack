@@ -1,8 +1,26 @@
 import { create } from 'zustand';
 import axios from 'axios';
+import Constants from 'expo-constants';
+import { Platform } from 'react-native';
 
-// Use /api prefix which is redirected to port 8001 by ingress
-const API_URL = '';
+// Get API URL based on platform
+const getApiUrl = () => {
+  // For web, use relative URL (proxied by nginx)
+  if (Platform.OS === 'web') {
+    return '';
+  }
+  
+  // For mobile (iOS/Android), use full backend URL
+  const backendUrl = Constants.expoConfig?.extra?.backendUrl || 
+                     process.env.EXPO_PUBLIC_BACKEND_URL || 
+                     'https://expense-tracker-1322.preview.emergentagent.com';
+  
+  return backendUrl;
+};
+
+const API_URL = getApiUrl();
+
+console.log('API_URL configured as:', API_URL);
 
 interface Transaction {
   _id?: string;
