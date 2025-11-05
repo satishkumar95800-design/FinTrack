@@ -244,6 +244,7 @@ export default function Dashboard() {
             <Text style={[styles.summaryAmount, { color: '#2196F3' }]}>
               ₹{summary.balance.toFixed(2)}
             </Text>
+            <Text style={styles.summarySubtext}>After Paid Bills</Text>
           </View>
         </View>
 
