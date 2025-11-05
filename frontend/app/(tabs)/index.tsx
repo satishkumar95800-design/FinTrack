@@ -95,22 +95,23 @@ export default function Dashboard() {
     const income = transactions
       .filter((t) => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
+    
+    // Expense: Only transaction expenses (static, doesn't change with bills)
     const expense = transactions
       .filter((t) => t.type === 'expense')
       .reduce((sum, t) => sum + t.amount, 0);
     
-    // Add unpaid bills to expense
+    // Amount Required: Expenses + Unpaid Bills (dynamic, updates when bills are paid)
     const unpaidBills = bills
       .filter((b) => !b.isPaid)
       .reduce((sum, b) => sum + b.amount, 0);
     
-    const totalExpense = expense + unpaidBills;
-    const amountRequired = amountRequiredData?.amountRequired || totalExpense;
+    const amountRequired = expense + unpaidBills;
     
     setSummary({ 
       amountRequired, 
-      expense: totalExpense, 
-      balance: income - totalExpense,
+      expense: expense, // Only transaction expenses
+      balance: income - amountRequired,
       unpaidBills 
     });
   };
