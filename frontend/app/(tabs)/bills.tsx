@@ -263,11 +263,15 @@ export default function Bills() {
                     </TouchableOpacity>
                     <TouchableOpacity
                       style={styles.deleteIconButton}
-                      onPress={() => handleDelete(bill._id!)}
+                      onPress={() => {
+                        console.log('Delete button pressed for bill:', bill._id, bill.name);
+                        handleDelete(bill._id!);
+                      }}
+                      activeOpacity={0.6}
                     >
                       <MaterialCommunityIcons
                         name="delete-outline"
-                        size={20}
+                        size={24}
                         color="#F44336"
                       />
                     </TouchableOpacity>
