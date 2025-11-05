@@ -102,6 +102,38 @@ export default function Bills() {
     ]);
   };
 
+  const handleBillNameChange = (text: string) => {
+    setNewBill({ ...newBill, name: text });
+    
+    if (text.length > 0) {
+      // Get unique bill names from existing bills
+      const existingBillNames = [...new Set(bills.map(b => b.name))];
+      
+      // Combine common names and existing names
+      const allSuggestions = [...commonBillNames, ...existingBillNames];
+      
+      // Filter based on input
+      const filtered = allSuggestions.filter(name =>
+        name.toLowerCase().includes(text.toLowerCase())
+      );
+      
+      // Remove duplicates and limit to 5 suggestions
+      const uniqueFiltered = [...new Set(filtered)].slice(0, 5);
+      
+      setFilteredSuggestions(uniqueFiltered);
+      setShowSuggestions(uniqueFiltered.length > 0);
+    } else {
+      setShowSuggestions(false);
+      setFilteredSuggestions([]);
+    }
+  };
+
+  const selectSuggestion = (suggestion: string) => {
+    setNewBill({ ...newBill, name: suggestion });
+    setShowSuggestions(false);
+    setFilteredSuggestions([]);
+  };
+
   const handleAddBill = async () => {
     if (!newBill.name || !newBill.amount) {
       Alert.alert('Error', 'Please fill in all fields');
