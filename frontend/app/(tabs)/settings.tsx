@@ -111,6 +111,34 @@ export default function Settings() {
 
       <ScrollView style={styles.scrollView}>
         <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Reports</Text>
+
+          <TouchableOpacity 
+            style={styles.settingItem} 
+            onPress={() => router.push('/monthly-summary' as any)}
+          >
+            <View style={styles.settingIconContainer}>
+              <MaterialCommunityIcons
+                name="table"
+                size={24}
+                color="#6C63FF"
+              />
+            </View>
+            <View style={styles.settingContent}>
+              <Text style={styles.settingTitle}>Monthly Summary</Text>
+              <Text style={styles.settingDescription}>
+                View detailed monthly report
+              </Text>
+            </View>
+            <MaterialCommunityIcons
+              name="chevron-right"
+              size={24}
+              color="#CCC"
+            />
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.section}>
           <Text style={styles.sectionTitle}>Data Management</Text>
 
           <TouchableOpacity style={styles.settingItem} onPress={handleExport}>
