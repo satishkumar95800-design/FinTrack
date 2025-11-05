@@ -660,4 +660,25 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontStyle: 'italic',
   },
+  suggestionsContainer: {
+    backgroundColor: '#F9F9F9',
+    borderRadius: 8,
+    marginTop: 8,
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    maxHeight: 200,
+  },
+  suggestionItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: '#F0F0F0',
+    gap: 8,
+  },
+  suggestionText: {
+    fontSize: 14,
+    color: '#333',
+    flex: 1,
+  },
 });
