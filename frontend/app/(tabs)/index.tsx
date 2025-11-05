@@ -404,6 +404,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  summarySubtext: {
+    fontSize: 10,
+    color: '#666',
+    marginTop: 4,
+    textAlign: 'center',
+  },
   quickActions: {
     flexDirection: 'row',
     paddingHorizontal: 16,
