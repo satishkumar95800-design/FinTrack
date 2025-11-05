@@ -96,8 +96,8 @@ export default function Dashboard() {
       .filter((t) => t.type === 'income')
       .reduce((sum, t) => sum + t.amount, 0);
     
-    // Expense: Only transaction expenses (static, doesn't change with bills)
-    const expense = transactions
+    // Transaction expenses only
+    const transactionExpenses = transactions
       .filter((t) => t.type === 'expense')
       .reduce((sum, t) => sum + t.amount, 0);
     
@@ -111,14 +111,20 @@ export default function Dashboard() {
       .filter((b) => b.isPaid)
       .reduce((sum, b) => sum + b.amount, 0);
     
+    // All bills (paid + unpaid)
+    const totalBills = paidBills + unpaidBills;
+    
     const amountRequired = unpaidBills; // Only unpaid bills
     
+    // Total Expense: Transaction Expenses + All Bills (Paid + Unpaid)
+    const totalExpense = transactionExpenses + totalBills;
+    
     // Balance: Income - (Transaction Expenses + Paid Bills)
-    const balance = income - (expense + paidBills);
+    const balance = income - (transactionExpenses + paidBills);
     
     setSummary({ 
       amountRequired, 
-      expense: expense, // Only transaction expenses
+      expense: totalExpense, // Transaction expenses + All bills
       balance: balance,
       unpaidBills,
       paidBills
