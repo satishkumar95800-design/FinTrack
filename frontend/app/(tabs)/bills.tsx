@@ -341,10 +341,28 @@ export default function Bills() {
               <TextInput
                 style={styles.input}
                 value={newBill.name}
-                onChangeText={(text) => setNewBill({ ...newBill, name: text })}
+                onChangeText={handleBillNameChange}
                 placeholder="e.g., Electricity Bill"
                 placeholderTextColor="#CCC"
               />
+              {showSuggestions && filteredSuggestions.length > 0 && (
+                <View style={styles.suggestionsContainer}>
+                  {filteredSuggestions.map((suggestion, index) => (
+                    <TouchableOpacity
+                      key={index}
+                      style={styles.suggestionItem}
+                      onPress={() => selectSuggestion(suggestion)}
+                    >
+                      <MaterialCommunityIcons
+                        name="lightbulb-outline"
+                        size={16}
+                        color="#6C63FF"
+                      />
+                      <Text style={styles.suggestionText}>{suggestion}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
 
               <Text style={styles.inputLabel}>Amount</Text>
               <TextInput
