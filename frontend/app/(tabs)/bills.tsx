@@ -545,11 +545,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   deleteIconButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: '#FFEBEE',
   },
   emptyState: {
     alignItems: 'center',
