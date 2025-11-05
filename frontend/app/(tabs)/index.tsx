@@ -241,7 +241,7 @@ export default function Dashboard() {
             <Text style={[styles.summaryAmount, { color: '#F44336' }]}>
               ₹{summary.expense.toFixed(2)}
             </Text>
-            <Text style={styles.summarySubtext}>Current Month</Text>
+            <Text style={styles.summarySubtext}>Expenses + All Bills</Text>
           </View>
 
           <View style={[styles.summaryCard, { backgroundColor: '#E3F2FD' }]}>
