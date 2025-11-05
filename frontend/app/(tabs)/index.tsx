@@ -106,14 +106,22 @@ export default function Dashboard() {
       .filter((b) => !b.isPaid)
       .reduce((sum, b) => sum + b.amount, 0);
     
+    // Paid Bills: Bills that have been paid
+    const paidBills = bills
+      .filter((b) => b.isPaid)
+      .reduce((sum, b) => sum + b.amount, 0);
+    
     const amountRequired = unpaidBills; // Only unpaid bills
-    const totalExpenseWithBills = expense + amountRequired;
+    
+    // Balance: Income - (Transaction Expenses + Paid Bills)
+    const balance = income - (expense + paidBills);
     
     setSummary({ 
       amountRequired, 
       expense: expense, // Only transaction expenses
-      balance: income - totalExpenseWithBills,
-      unpaidBills 
+      balance: balance,
+      unpaidBills,
+      paidBills
     });
   };
 
