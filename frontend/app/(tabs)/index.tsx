@@ -213,18 +213,20 @@ export default function Dashboard() {
             <Text style={[styles.summaryAmount, { color: '#FF9800' }]}>
               ₹{summary.amountRequired.toFixed(2)}
             </Text>
+            <Text style={styles.summarySubtext}>Expense + Unpaid Bills</Text>
           </View>
 
           <View style={[styles.summaryCard, { backgroundColor: '#FFEBEE' }]}>
             <MaterialCommunityIcons
-              name="arrow-up-circle"
+              name="shopping"
               size={32}
               color="#F44336"
             />
-            <Text style={styles.summaryLabel}>Expense</Text>
+            <Text style={styles.summaryLabel}>Total Expense</Text>
             <Text style={[styles.summaryAmount, { color: '#F44336' }]}>
               ₹{summary.expense.toFixed(2)}
             </Text>
+            <Text style={styles.summarySubtext}>Current Month</Text>
           </View>
 
           <View style={[styles.summaryCard, { backgroundColor: '#E3F2FD' }]}>
