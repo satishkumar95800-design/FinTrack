@@ -73,6 +73,9 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "backendUrl": "https://expense-tracker-1322.preview.emergentagent.com"
     }
   }
 }
