@@ -101,17 +101,18 @@ export default function Dashboard() {
       .filter((t) => t.type === 'expense')
       .reduce((sum, t) => sum + t.amount, 0);
     
-    // Amount Required: Expenses + Unpaid Bills (dynamic, updates when bills are paid)
+    // Amount Required: Only Unpaid Bills (dynamic, updates when bills are paid)
     const unpaidBills = bills
       .filter((b) => !b.isPaid)
       .reduce((sum, b) => sum + b.amount, 0);
     
-    const amountRequired = expense + unpaidBills;
+    const amountRequired = unpaidBills; // Only unpaid bills
+    const totalExpenseWithBills = expense + amountRequired;
     
     setSummary({ 
       amountRequired, 
       expense: expense, // Only transaction expenses
-      balance: income - amountRequired,
+      balance: income - totalExpenseWithBills,
       unpaidBills 
     });
   };
