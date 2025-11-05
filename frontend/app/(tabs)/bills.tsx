@@ -26,6 +26,30 @@ export default function Bills() {
     isRecurring: false,
     recurringDay: new Date().getDate(),
   });
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+
+  // Common bill names
+  const commonBillNames = [
+    'Electricity Bill',
+    'Water Bill',
+    'Gas Bill',
+    'Internet Bill',
+    'Mobile Bill',
+    'DTH/Cable Bill',
+    'House Rent',
+    'Apartment Maintenance',
+    'Car EMI',
+    'Home Loan EMI',
+    'Personal Loan EMI',
+    'Credit Card Bill',
+    'Insurance Premium',
+    'School/College Fee',
+    'Gym Membership',
+    'Netflix Subscription',
+    'Amazon Prime',
+    'Spotify Premium',
+  ];
 
   useEffect(() => {
     loadBills();
