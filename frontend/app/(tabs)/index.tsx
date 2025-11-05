@@ -214,7 +214,7 @@ export default function Dashboard() {
             <Text style={[styles.summaryAmount, { color: '#FF9800' }]}>
               ₹{summary.amountRequired.toFixed(2)}
             </Text>
-            <Text style={styles.summarySubtext}>Expense + Unpaid Bills</Text>
+            <Text style={styles.summarySubtext}>Unpaid Bills Only</Text>
           </View>
 
           <View style={[styles.summaryCard, { backgroundColor: '#FFEBEE' }]}>
