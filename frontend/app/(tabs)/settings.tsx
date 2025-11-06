@@ -8,17 +8,23 @@ import {
   Alert,
   TextInput,
   Modal,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
 import { router } from 'expo-router';
+import Constants from 'expo-constants';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || '';
 
 export default function Settings() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
 
   const handleExport = () => {
     Alert.alert(
