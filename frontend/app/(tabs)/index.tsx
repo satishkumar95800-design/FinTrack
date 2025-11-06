@@ -161,31 +161,12 @@ export default function Dashboard() {
     );
   };
 
-  const scanSMS = async () => {
-    if (Platform.OS !== 'android') {
-      Alert.alert('Not Available', 'SMS scanning is only available on Android');
-      return;
-    }
-
-    const isAvailable = await SMS.isAvailableAsync();
-    if (!isAvailable) {
-      Alert.alert('Error', 'SMS is not available on this device');
-      return;
-    }
-
-    Alert.alert(
-      'SMS Scanner',
-      'This feature would scan your SMS messages for banking transactions. Due to platform limitations, please enter transaction details manually or use the receipt scanner.',
-      [{ text: 'OK' }]
-    );
+  const scanSMS = () => {
+    router.push('/sms-parser');
   };
 
   const scanEmails = () => {
-    Alert.alert(
-      'Email Scanner',
-      'This feature would scan your emails for credit card bills. Due to platform limitations, please add bills manually from the Bills tab.',
-      [{ text: 'OK' }]
-    );
+    router.push('/email-parser');
   };
 
   const getCategoryIcon = (categoryName: string) => {
