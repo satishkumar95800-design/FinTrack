@@ -749,4 +749,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '600',
   },
+  biometricInfo: {
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#F0EEFF',
+    borderRadius: 12,
+    marginBottom: 20,
+  },
+  biometricInfoText: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 12,
+    lineHeight: 20,
+  },
 });
