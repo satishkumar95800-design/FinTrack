@@ -262,6 +262,21 @@ async def get_me(current_user = Depends(get_current_user)):
     user_data.pop("password", None)
     return {"user": user_data}
 
+@app.post("/api/auth/forgot-password")
+async def forgot_password(user_login: UserLogin):
+    # Check if user exists
+    user = await users_collection.find_one({"email": user_login.email})
+    
+    if not user:
+        # Don't reveal if email exists or not for security
+        return {"message": "If the email exists, a reset link will be sent"}
+    
+    # In production, send actual email with reset token
+    # For now, just return success
+    # TODO: Implement email sending with reset token
+    
+    return {"message": "Password reset instructions sent to your email"}
+
 # Categories
 @app.get("/api/categories")
 async def get_categories():
