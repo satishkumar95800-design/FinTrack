@@ -337,6 +337,31 @@ export default function Settings() {
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Security</Text>
 
+          {/* Biometric Toggle */}
+          {biometricAvailable && (
+            <View style={styles.settingItem}>
+              <View style={styles.settingIconContainer}>
+                <MaterialCommunityIcons
+                  name="fingerprint"
+                  size={24}
+                  color="#4CAF50"
+                />
+              </View>
+              <View style={styles.settingContent}>
+                <Text style={styles.settingTitle}>Biometric Login</Text>
+                <Text style={styles.settingDescription}>
+                  {biometricEnabled ? 'Enabled' : 'Use fingerprint or Face ID'}
+                </Text>
+              </View>
+              <Switch
+                value={biometricEnabled}
+                onValueChange={handleToggleBiometric}
+                trackColor={{ false: '#E0E0E0', true: '#B8B0FF' }}
+                thumbColor={biometricEnabled ? '#6C63FF' : '#FFF'}
+              />
+            </View>
+          )}
+
           <TouchableOpacity 
             style={styles.settingItem} 
             onPress={() => setShowPasswordModal(true)}
