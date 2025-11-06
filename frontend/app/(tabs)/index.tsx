@@ -270,6 +270,17 @@ export default function Dashboard() {
           </TouchableOpacity>
         </View>
 
+        {/* Email Scanner Button */}
+        <View style={styles.emailScannerContainer}>
+          <TouchableOpacity
+            style={styles.emailButton}
+            onPress={scanEmails}
+          >
+            <MaterialCommunityIcons name="email-search" size={24} color="#FFF" />
+            <Text style={styles.emailButtonText}>Scan Email for Bills</Text>
+          </TouchableOpacity>
+        </View>
+
         {/* Recent Transactions */}
         <View style={styles.transactionsHeader}>
           <Text style={styles.sectionTitle}>Recent Transactions</Text>
