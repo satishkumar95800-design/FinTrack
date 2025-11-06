@@ -575,6 +575,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
   },
+  resetButtonDisabled: {
+    opacity: 0.6,
+  },
   resetButtonText: {
     color: '#FFF',
     fontSize: 16,
