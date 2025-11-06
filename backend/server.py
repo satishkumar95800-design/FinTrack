@@ -181,6 +181,87 @@ async def startup_db_client():
 async def health_check():
     return {"status": "ok", "message": "Budget Planner API is running"}
 
+# Authentication endpoints
+@app.post("/api/auth/register", response_model=Token)
+async def register(user: UserRegister):
+    # Check if user already exists
+    existing_user = await users_collection.find_one({"email": user.email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Hash password and create user
+    hashed_password = get_password_hash(user.password)
+    user_data = {
+        "email": user.email,
+        "password": hashed_password,
+        "name": user.name,
+        "createdAt": datetime.utcnow().isoformat()
+    }
+    
+    result = await users_collection.insert_one(user_data)
+    
+    # Create access token
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/api/auth/login", response_model=Token)
+async def login(user: UserLogin):
+    # Find user
+    db_user = await users_collection.find_one({"email": user.email})
+    if not db_user or not verify_password(user.password, db_user["password"]):
+        raise HTTPException(
+            status_code=401,
+            detail="Incorrect email or password"
+        )
+    
+    # Create access token
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    access_token = create_access_token(
+        data={"sub": user.email}, expires_delta=access_token_expires
+    )
+    
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.post("/api/auth/logout")
+async def logout():
+    # With JWT, logout is handled client-side by removing the token
+    return {"message": "Logged out successfully"}
+
+@app.put("/api/auth/reset-password")
+async def reset_password(
+    password_data: PasswordReset,
+    current_user = Depends(get_current_user)
+):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    # Verify current password
+    if not verify_password(password_data.currentPassword, current_user["password"]):
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    
+    # Update password
+    new_hashed_password = get_password_hash(password_data.newPassword)
+    await users_collection.update_one(
+        {"email": current_user["email"]},
+        {"$set": {"password": new_hashed_password}}
+    )
+    
+    return {"message": "Password updated successfully"}
+
+@app.get("/api/auth/me")
+async def get_me(current_user = Depends(get_current_user)):
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    # Remove password from response
+    user_data = dict(current_user)
+    user_data.pop("password", None)
+    return {"user": user_data}
+
 # Categories
 @app.get("/api/categories")
 async def get_categories():
