@@ -418,10 +418,15 @@ export default function Settings() {
             </View>
 
             <TouchableOpacity
-              style={styles.resetButton}
+              style={[styles.resetButton, loading && styles.resetButtonDisabled]}
               onPress={handlePasswordReset}
+              disabled={loading}
             >
-              <Text style={styles.resetButtonText}>Change Password</Text>
+              {loading ? (
+                <ActivityIndicator color="#FFF" />
+              ) : (
+                <Text style={styles.resetButtonText}>Change Password</Text>
+              )}
             </TouchableOpacity>
           </View>
         </SafeAreaView>
