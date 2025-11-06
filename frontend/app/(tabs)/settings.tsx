@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   TextInput,
   Modal,
   ActivityIndicator,
+  Switch,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
@@ -16,15 +17,97 @@ import Toast from 'react-native-toast-message';
 import { router } from 'expo-router';
 import Constants from 'expo-constants';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../../contexts/AuthContext';
 
 const API_URL = Constants.expoConfig?.extra?.EXPO_PUBLIC_BACKEND_URL || '';
 
 export default function Settings() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [showBiometricModal, setShowBiometricModal] = useState(false);
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricEmail, setBiometricEmail] = useState('');
+  const [biometricPassword, setBiometricPassword] = useState('');
+  
+  const { user, enableBiometric, disableBiometric, isBiometricEnabled, isBiometricAvailable } = useAuth();
+
+  useEffect(() => {
+    checkBiometricStatus();
+  }, []);
+
+  const checkBiometricStatus = async () => {
+    const available = await isBiometricAvailable();
+    const enabled = await isBiometricEnabled();
+    setBiometricAvailable(available);
+    setBiometricEnabled(enabled);
+  };
+
+  const handleToggleBiometric = async (value: boolean) => {
+    if (value) {
+      // Enable biometric - show modal to enter credentials
+      setShowBiometricModal(true);
+    } else {
+      // Disable biometric
+      Alert.alert(
+        'Disable Biometric',
+        'Are you sure you want to disable biometric login?',
+        [
+          { text: 'Cancel', style: 'cancel' },
+          {
+            text: 'Disable',
+            style: 'destructive',
+            onPress: async () => {
+              await disableBiometric();
+              setBiometricEnabled(false);
+              Toast.show({
+                type: 'success',
+                text1: 'Disabled',
+                text2: 'Biometric login has been disabled',
+              });
+            },
+          },
+        ]
+      );
+    }
+  };
+
+  const handleEnableBiometric = async () => {
+    if (!biometricEmail.trim() || !biometricPassword.trim()) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Please enter your credentials',
+      });
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await enableBiometric(biometricEmail, biometricPassword);
+      setBiometricEnabled(true);
+      setShowBiometricModal(false);
+      setBiometricEmail('');
+      setBiometricPassword('');
+      
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Biometric login has been enabled',
+      });
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Failed to enable biometric login',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleExport = () => {
     Alert.alert(
