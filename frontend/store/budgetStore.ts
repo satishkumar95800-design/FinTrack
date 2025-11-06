@@ -13,7 +13,7 @@ const getApiUrl = () => {
   // For mobile (iOS/Android), use full backend URL
   const backendUrl = Constants.expoConfig?.extra?.backendUrl || 
                      process.env.EXPO_PUBLIC_BACKEND_URL || 
-                     'https://expense-tracker-1322.preview.emergentagent.com';
+                     'https://money-manager-1200.preview.emergentagent.com';
   
   return backendUrl;
 };
