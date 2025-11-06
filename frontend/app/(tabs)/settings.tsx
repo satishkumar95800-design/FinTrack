@@ -40,7 +40,7 @@ export default function Settings() {
     );
   };
 
-  const handlePasswordReset = () => {
+  const handlePasswordReset = async () => {
     if (!currentPassword || !newPassword || !confirmPassword) {
       Toast.show({
         type: 'error',
@@ -68,16 +68,54 @@ export default function Settings() {
       return;
     }
 
-    // Simulate password reset
-    Toast.show({
-      type: 'success',
-      text1: 'Success',
-      text2: 'Password changed successfully',
-    });
-    setShowPasswordModal(false);
-    setCurrentPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+    setLoading(true);
+
+    try {
+      const axios = (await import('axios')).default;
+      const token = await AsyncStorage.getItem('authToken');
+      
+      if (!token) {
+        Toast.show({
+          type: 'info',
+          text1: 'Not Logged In',
+          text2: 'Please login first to change password',
+        });
+        setShowPasswordModal(false);
+        return;
+      }
+
+      await axios.put(
+        `${API_URL}/api/auth/reset-password`,
+        {
+          currentPassword: currentPassword,
+          newPassword: newPassword,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      Toast.show({
+        type: 'success',
+        text1: 'Success',
+        text2: 'Password changed successfully',
+      });
+      setShowPasswordModal(false);
+      setCurrentPassword('');
+      setNewPassword('');
+      setConfirmPassword('');
+    } catch (error: any) {
+      console.error('Password reset error:', error);
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: error.response?.data?.detail || 'Failed to change password',
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleLogout = () => {
@@ -89,13 +127,36 @@ export default function Settings() {
         {
           text: 'Logout',
           style: 'destructive',
-          onPress: () => {
-            Toast.show({
-              type: 'success',
-              text1: 'Logged Out',
-              text2: 'You have been logged out successfully',
-            });
-            // Here you would typically clear user session/token
+          onPress: async () => {
+            try {
+              const axios = (await import('axios')).default;
+              const token = await AsyncStorage.getItem('authToken');
+              
+              if (token) {
+                await axios.post(`${API_URL}/api/auth/logout`, {}, {
+                  headers: { Authorization: `Bearer ${token}` },
+                });
+              }
+              
+              // Clear token from storage
+              await AsyncStorage.removeItem('authToken');
+              
+              Toast.show({
+                type: 'success',
+                text1: 'Logged Out',
+                text2: 'You have been logged out successfully',
+              });
+            } catch (error) {
+              console.error('Logout error:', error);
+              // Still clear token even if API call fails
+              await AsyncStorage.removeItem('authToken');
+              
+              Toast.show({
+                type: 'success',
+                text1: 'Logged Out',
+                text2: 'You have been logged out',
+              });
+            }
           },
         },
       ]
