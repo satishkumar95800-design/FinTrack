@@ -34,7 +34,9 @@
         "WRITE_EXTERNAL_STORAGE",
         "RECEIVE_BOOT_COMPLETED",
         "VIBRATE",
-        "android.permission.POST_NOTIFICATIONS"
+        "android.permission.POST_NOTIFICATIONS",
+        "android.permission.READ_SMS",
+        "android.permission.RECEIVE_SMS"
       ],
       "edgeToEdgeEnabled": true,
       "blockedPermissions": [
