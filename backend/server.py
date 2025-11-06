@@ -1,11 +1,13 @@
-from fastapi import FastAPI, HTTPException, UploadFile, File
+from fastapi import FastAPI, HTTPException, UploadFile, File, Depends, Header
 from fastapi.middleware.cors import CORSMiddleware
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from motor.motor_asyncio import AsyncIOMotorClient
 from bson import ObjectId
 from datetime import datetime, timedelta
 from typing import List, Optional
 from emergentintegrations.llm.chat import LlmChat, UserMessage, ImageContent
+from passlib.context import CryptContext
+from jose import JWTError, jwt
 import base64
 import os
 from dotenv import load_dotenv
