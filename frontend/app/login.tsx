@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -14,14 +14,83 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import Toast from 'react-native-toast-message';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import * as AppleAuthentication from 'expo-apple-authentication';
 import { useAuth } from '../contexts/AuthContext';
+
+WebBrowser.maybeCompleteAuthSession();
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
-  const { login } = useAuth();
+  const [biometricAvailable, setBiometricAvailable] = useState(false);
+  const [biometricEnabled, setBiometricEnabled] = useState(false);
+  const [appleAvailable, setAppleAvailable] = useState(false);
+  
+  const { login, socialLogin, biometricLogin, isBiometricAvailable, isBiometricEnabled } = useAuth();
+
+  // Google Sign-In config
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: 'YOUR_EXPO_CLIENT_ID.apps.googleusercontent.com',
+    iosClientId: 'YOUR_IOS_CLIENT_ID.apps.googleusercontent.com',
+    androidClientId: 'YOUR_ANDROID_CLIENT_ID.apps.googleusercontent.com',
+    webClientId: 'YOUR_WEB_CLIENT_ID.apps.googleusercontent.com',
+  });
+
+  useEffect(() => {
+    checkBiometric();
+    checkAppleAvailability();
+  }, []);
+
+  useEffect(() => {
+    if (response?.type === 'success') {
+      handleGoogleResponse(response);
+    }
+  }, [response]);
+
+  const checkBiometric = async () => {
+    const available = await isBiometricAvailable();
+    const enabled = await isBiometricEnabled();
+    setBiometricAvailable(available);
+    setBiometricEnabled(enabled);
+  };
+
+  const checkAppleAvailability = async () => {
+    const available = await AppleAuthentication.isAvailableAsync();
+    setAppleAvailable(available);
+  };
+
+  const handleBiometricLogin = async () => {
+    setLoading(true);
+    try {
+      const success = await biometricLogin();
+      if (success) {
+        Toast.show({
+          type: 'success',
+          text1: 'Welcome Back!',
+          text2: 'Logged in with biometrics',
+        });
+        router.replace('/(tabs)');
+      } else {
+        Toast.show({
+          type: 'error',
+          text1: 'Failed',
+          text2: 'Biometric authentication failed',
+        });
+      }
+    } catch (error) {
+      Toast.show({
+        type: 'error',
+        text1: 'Error',
+        text2: 'Biometric login failed',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleLogin = async () => {
     if (!email.trim() || !password.trim()) {
@@ -33,7 +102,6 @@ export default function Login() {
       return;
     }
 
-    // Basic email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Toast.show({
@@ -55,7 +123,6 @@ export default function Login() {
         text2: 'Logged in successfully',
       });
 
-      // Navigate to main app
       router.replace('/(tabs)');
     } catch (error: any) {
       Toast.show({
@@ -63,6 +130,91 @@ export default function Login() {
         text1: 'Login Failed',
         text2: error.message || 'Please check your credentials',
       });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSignIn = () => {
+    promptAsync();
+  };
+
+  const handleGoogleResponse = async (response: any) => {
+    if (response?.authentication?.accessToken) {
+      setLoading(true);
+      try {
+        // Fetch user info from Google
+        const userInfoResponse = await fetch(
+          'https://www.googleapis.com/userinfo/v2/me',
+          {
+            headers: { Authorization: `Bearer ${response.authentication.accessToken}` },
+          }
+        );
+        const userInfo = await userInfoResponse.json();
+
+        await socialLogin(
+          'google',
+          response.authentication.accessToken,
+          userInfo.email,
+          userInfo.name || 'User'
+        );
+
+        Toast.show({
+          type: 'success',
+          text1: 'Welcome!',
+          text2: 'Logged in with Google',
+        });
+
+        router.replace('/(tabs)');
+      } catch (error) {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Google sign-in failed',
+        });
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
+
+  const handleAppleSignIn = async () => {
+    try {
+      const credential = await AppleAuthentication.signInAsync({
+        requestedScopes: [
+          AppleAuthentication.AppleAuthenticationScope.FULL_NAME,
+          AppleAuthentication.AppleAuthenticationScope.EMAIL,
+        ],
+      });
+
+      setLoading(true);
+
+      const name = credential.fullName
+        ? `${credential.fullName.givenName || ''} ${credential.fullName.familyName || ''}`.trim()
+        : 'User';
+
+      await socialLogin(
+        'apple',
+        credential.identityToken || '',
+        credential.email || '',
+        name
+      );
+
+      Toast.show({
+        type: 'success',
+        text1: 'Welcome!',
+        text2: 'Logged in with Apple',
+      });
+
+      router.replace('/(tabs)');
+    } catch (error: any) {
+      if (error.code !== 'ERR_CANCELED') {
+        Toast.show({
+          type: 'error',
+          text1: 'Error',
+          text2: 'Apple sign-in failed',
+        });
+      }
     } finally {
       setLoading(false);
     }
@@ -78,7 +230,6 @@ export default function Login() {
           contentContainerStyle={styles.scrollContent}
           keyboardShouldPersistTaps="handled"
         >
-          {/* Logo/Header */}
           <View style={styles.header}>
             <View style={styles.logoContainer}>
               <MaterialCommunityIcons name="wallet" size={64} color="#6C63FF" />
@@ -87,7 +238,18 @@ export default function Login() {
             <Text style={styles.subtitle}>Manage your finances with ease</Text>
           </View>
 
-          {/* Login Form */}
+          {/* Biometric Login */}
+          {biometricAvailable && biometricEnabled && (
+            <TouchableOpacity
+              style={styles.biometricButton}
+              onPress={handleBiometricLogin}
+              disabled={loading}
+            >
+              <MaterialCommunityIcons name="fingerprint" size={32} color="#6C63FF" />
+              <Text style={styles.biometricText}>Login with Biometrics</Text>
+            </TouchableOpacity>
+          )}
+
           <View style={styles.form}>
             <View style={styles.inputContainer}>
               <MaterialCommunityIcons
@@ -157,8 +319,31 @@ export default function Login() {
 
             <View style={styles.divider}>
               <View style={styles.dividerLine} />
-              <Text style={styles.dividerText}>OR</Text>
+              <Text style={styles.dividerText}>OR CONTINUE WITH</Text>
               <View style={styles.dividerLine} />
+            </View>
+
+            {/* Social Login Buttons */}
+            <View style={styles.socialButtons}>
+              <TouchableOpacity
+                style={styles.googleButton}
+                onPress={handleGoogleSignIn}
+                disabled={loading || !request}
+              >
+                <MaterialCommunityIcons name="google" size={24} color="#FFF" />
+                <Text style={styles.socialButtonText}>Google</Text>
+              </TouchableOpacity>
+
+              {appleAvailable && (
+                <TouchableOpacity
+                  style={styles.appleButton}
+                  onPress={handleAppleSignIn}
+                  disabled={loading}
+                >
+                  <MaterialCommunityIcons name="apple" size={24} color="#FFF" />
+                  <Text style={styles.socialButtonText}>Apple</Text>
+                </TouchableOpacity>
+              )}
             </View>
 
             <TouchableOpacity
@@ -192,7 +377,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginBottom: 48,
+    marginBottom: 32,
   },
   logoContainer: {
     width: 100,
@@ -212,6 +397,23 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: '#666',
+  },
+  biometricButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#F0EEFF',
+    borderRadius: 12,
+    paddingVertical: 16,
+    marginBottom: 24,
+    borderWidth: 2,
+    borderColor: '#6C63FF',
+  },
+  biometricText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#6C63FF',
+    marginLeft: 12,
   },
   form: {
     flex: 1,
@@ -280,7 +482,37 @@ const styles = StyleSheet.create({
   dividerText: {
     marginHorizontal: 16,
     color: '#999',
+    fontSize: 12,
+    fontWeight: '600',
+  },
+  socialButtons: {
+    flexDirection: 'row',
+    gap: 12,
+    marginBottom: 24,
+  },
+  googleButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#DB4437',
+    borderRadius: 12,
+    paddingVertical: 14,
+  },
+  appleButton: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#000',
+    borderRadius: 12,
+    paddingVertical: 14,
+  },
+  socialButtonText: {
+    color: '#FFF',
     fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 8,
   },
   registerLink: {
     alignItems: 'center',
