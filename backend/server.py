@@ -95,6 +95,29 @@ class EmailMessage(BaseModel):
     body: str
     date: str
 
+class User(BaseModel):
+    email: EmailStr
+    password: str
+    name: str = "User"
+    createdAt: str = Field(default_factory=lambda: datetime.utcnow().isoformat())
+
+class UserRegister(BaseModel):
+    email: EmailStr
+    password: str
+    name: str = "User"
+
+class UserLogin(BaseModel):
+    email: EmailStr
+    password: str
+
+class PasswordReset(BaseModel):
+    currentPassword: str
+    newPassword: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
 # Helper functions
 def serialize_doc(doc):
     if doc and "_id" in doc:
