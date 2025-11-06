@@ -24,6 +24,8 @@ export default function Analytics() {
   const [pocketMoney, setPocketMoney] = useState<any>(null);
   const [categoryData, setCategoryData] = useState<any[]>([]);
   const [monthlyData, setMonthlyData] = useState<any[]>([]);
+  const [aiInsights, setAiInsights] = useState<any>(null);
+  const [loadingInsights, setLoadingInsights] = useState(false);
 
   useEffect(() => {
     calculateAnalytics();
