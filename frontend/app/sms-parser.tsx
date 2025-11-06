@@ -242,7 +242,7 @@ export default function SMSParser() {
             {parsedData.isUPI && (
               <View style={styles.resultRow}>
                 <Text style={styles.resultLabel}>Payment Method:</Text>
-                <View style={styles.upiB badge}>
+                <View style={styles.upiBadge}>
                   <MaterialCommunityIcons name="bank-transfer" size={16} color="#6C63FF" />
                   <Text style={styles.upiBadgeText}>UPI</Text>
                 </View>
