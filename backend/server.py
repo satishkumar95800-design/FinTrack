@@ -283,6 +283,38 @@ async def forgot_password(user_login: UserLogin):
     
     return {"message": "Password reset instructions sent to your email"}
 
+@app.post("/api/auth/social-login", response_model=Token)
+async def social_login(social_data: SocialLogin):
+    # Check if user already exists with this email
+    user = await users_collection.find_one({"email": social_data.email})
+    
+    if user:
+        # User exists, just login
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": social_data.email}, expires_delta=access_token_expires
+        )
+        return {"access_token": access_token, "token_type": "bearer"}
+    else:
+        # Create new user
+        user_data = {
+            "email": social_data.email,
+            "name": social_data.name,
+            "password": get_password_hash(f"{social_data.provider}_{social_data.token[:20]}"),  # Dummy password
+            "socialProvider": social_data.provider,
+            "createdAt": datetime.utcnow().isoformat()
+        }
+        
+        result = await users_collection.insert_one(user_data)
+        
+        # Create access token
+        access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token = create_access_token(
+            data={"sub": social_data.email}, expires_delta=access_token_expires
+        )
+        
+        return {"access_token": access_token, "token_type": "bearer"}
+
 # Categories
 @app.get("/api/categories")
 async def get_categories():
