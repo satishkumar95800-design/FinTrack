@@ -118,6 +118,12 @@ class Token(BaseModel):
     access_token: str
     token_type: str
 
+class SocialLogin(BaseModel):
+    provider: str  # google or apple
+    token: str
+    email: EmailStr
+    name: str
+
 # Helper functions
 def serialize_doc(doc):
     if doc and "_id" in doc:
