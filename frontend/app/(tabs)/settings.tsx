@@ -539,6 +539,64 @@ export default function Settings() {
           </View>
         </SafeAreaView>
       </Modal>
+
+      {/* Biometric Setup Modal */}
+      <Modal
+        visible={showBiometricModal}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setShowBiometricModal(false)}
+      >
+        <SafeAreaView style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Enable Biometric Login</Text>
+              <TouchableOpacity onPress={() => setShowBiometricModal(false)}>
+                <MaterialCommunityIcons name="close" size={24} color="#333" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.biometricInfo}>
+              <MaterialCommunityIcons name="fingerprint" size={48} color="#6C63FF" />
+              <Text style={styles.biometricInfoText}>
+                Enter your credentials to enable biometric login. Your credentials will be stored securely.
+              </Text>
+            </View>
+
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Email"
+              placeholderTextColor="#999"
+              value={biometricEmail}
+              onChangeText={setBiometricEmail}
+              keyboardType="email-address"
+              autoCapitalize="none"
+            />
+
+            <TextInput
+              style={styles.modalInput}
+              placeholder="Password"
+              placeholderTextColor="#999"
+              value={biometricPassword}
+              onChangeText={setBiometricPassword}
+              secureTextEntry
+              autoCapitalize="none"
+            />
+
+            <TouchableOpacity
+              style={[styles.resetButton, loading && styles.resetButtonDisabled]}
+              onPress={handleEnableBiometric}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color="#FFF" />
+              ) : (
+                <Text style={styles.resetButtonText}>Enable Biometric</Text>
+              )}
+            </TouchableOpacity>
+          </View>
+        </SafeAreaView>
+      </Modal>
     </SafeAreaView>
   );
 }
