@@ -438,6 +438,24 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginTop: 4,
   },
+  emailScannerContainer: {
+    paddingHorizontal: 16,
+    marginBottom: 16,
+  },
+  emailButton: {
+    backgroundColor: '#E91E63',
+    borderRadius: 12,
+    padding: 16,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  emailButtonText: {
+    color: '#FFF',
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
   transactionsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
