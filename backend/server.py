@@ -593,6 +593,158 @@ async def get_pocket_money():
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Pocket money calculation failed: {str(e)}")
 
+@app.get("/api/analytics/ai-insights")
+async def get_ai_insights():
+    """Get AI-powered financial insights and recommendations"""
+    try:
+        current_month = datetime.utcnow().strftime("%Y-%m")
+        
+        # Get last 3 months of data for better analysis
+        three_months_ago = (datetime.utcnow() - timedelta(days=90)).strftime("%Y-%m")
+        
+        # Fetch all relevant data
+        transactions = await transactions_collection.find({
+            "date": {"$gte": three_months_ago}
+        }).to_list(length=10000)
+        
+        bills = await bills_collection.find().to_list(length=1000)
+        
+        # Calculate key metrics
+        total_income = sum(t["amount"] for t in transactions if t["type"] == "income")
+        total_expenses = sum(t["amount"] for t in transactions if t["type"] == "expense")
+        
+        # Get recurring bills (loans/EMIs)
+        recurring_bills = [b for b in bills if b.get("isRecurring", False)]
+        loan_bills = [b for b in recurring_bills if any(keyword in b["name"].lower() for keyword in ["loan", "emi", "credit"])]
+        
+        # Calculate monthly averages
+        months_data = {}
+        for t in transactions:
+            month = t["date"][:7]
+            if month not in months_data:
+                months_data[month] = {"income": 0, "expense": 0}
+            if t["type"] == "income":
+                months_data[month]["income"] += t["amount"]
+            else:
+                months_data[month]["expense"] += t["amount"]
+        
+        avg_monthly_income = sum(m["income"] for m in months_data.values()) / len(months_data) if months_data else 0
+        avg_monthly_expense = sum(m["expense"] for m in months_data.values()) / len(months_data) if months_data else 0
+        
+        # Category-wise spending
+        category_spending = {}
+        for t in transactions:
+            if t["type"] == "expense":
+                cat = t.get("category", "Other")
+                category_spending[cat] = category_spending.get(cat, 0) + t["amount"]
+        
+        # Prepare data for AI analysis
+        analysis_data = {
+            "total_income": total_income,
+            "total_expenses": total_expenses,
+            "avg_monthly_income": avg_monthly_income,
+            "avg_monthly_expense": avg_monthly_expense,
+            "monthly_savings": avg_monthly_income - avg_monthly_expense,
+            "loan_bills": [{"name": b["name"], "amount": b["amount"]} for b in loan_bills],
+            "recurring_bills": [{"name": b["name"], "amount": b["amount"]} for b in recurring_bills],
+            "category_spending": category_spending,
+            "months_count": len(months_data)
+        }
+        
+        # Use AI to generate insights
+        api_key = os.getenv("EMERGENT_LLM_KEY")
+        if not api_key:
+            raise HTTPException(status_code=500, detail="API key not configured")
+        
+        chat = LlmChat(
+            api_key=api_key,
+            session_id=f"ai-insights-{datetime.utcnow().timestamp()}",
+            system_message="You are a professional financial advisor AI. Analyze user's financial data and provide actionable insights."
+        ).with_model("openai", "gpt-4o-mini")
+        
+        prompt = f"""Analyze this financial data and provide comprehensive insights:
+
+Income & Expenses:
+- Average Monthly Income: ₹{avg_monthly_income:.2f}
+- Average Monthly Expense: ₹{avg_monthly_expense:.2f}
+- Monthly Savings: ₹{analysis_data['monthly_savings']:.2f}
+
+Loans/EMIs:
+{chr(10).join([f"- {loan['name']}: ₹{loan['amount']}/month" for loan in analysis_data['loan_bills']]) if analysis_data['loan_bills'] else "- No loans detected"}
+
+Category-wise Spending:
+{chr(10).join([f"- {cat}: ₹{amt:.2f}" for cat, amt in sorted(category_spending.items(), key=lambda x: x[1], reverse=True)[:5]])}
+
+Provide analysis in this EXACT JSON format:
+{{
+  "loan_payoff_strategy": {{
+    "current_timeline": "Estimated months to clear all loans at current rate",
+    "accelerated_timeline": "Months if paying 20% extra each month",
+    "recommendation": "Specific action to finish loans faster"
+  }},
+  "savings_opportunities": [
+    {{"category": "Category name", "current": 5000, "suggested": 3000, "savings": 2000, "tip": "How to save"}},
+    {{"category": "Another category", "current": 3000, "suggested": 2000, "savings": 1000, "tip": "Another tip"}}
+  ],
+  "spending_insights": [
+    "Key insight about spending pattern 1",
+    "Key insight about spending pattern 2"
+  ],
+  "financial_health_score": 75,
+  "top_recommendations": [
+    "Most important action user should take",
+    "Second important action",
+    "Third important action"
+  ],
+  "future_projection": {{
+    "6_months": "Financial situation in 6 months",
+    "1_year": "Financial situation in 1 year"
+  }}
+}}
+
+Be specific with numbers and actionable. Focus on Indian context (₹)."""
+
+        user_message = UserMessage(text=prompt)
+        response = await chat.send_message(user_message)
+        
+        # Parse AI response
+        import json
+        # Extract JSON from response (handle markdown code blocks)
+        json_str = response
+        if "```json" in response:
+            json_str = response.split("```json")[1].split("```")[0].strip()
+        elif "```" in response:
+            json_str = response.split("```")[1].split("```")[0].strip()
+        
+        try:
+            insights = json.loads(json_str)
+        except:
+            # Fallback if JSON parsing fails
+            insights = {
+                "loan_payoff_strategy": {
+                    "current_timeline": "Analysis pending",
+                    "accelerated_timeline": "Analysis pending",
+                    "recommendation": response[:200]
+                },
+                "savings_opportunities": [],
+                "spending_insights": ["AI analysis in progress"],
+                "financial_health_score": 70,
+                "top_recommendations": ["Continue tracking expenses", "Review spending patterns"],
+                "future_projection": {
+                    "6_months": "Steady progress expected",
+                    "1_year": "Financial improvement likely"
+                }
+            }
+        
+        return {
+            "insights": insights,
+            "data_summary": analysis_data,
+            "generated_at": datetime.utcnow().isoformat()
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"AI insights generation failed: {str(e)}")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=8001)
