@@ -139,6 +139,207 @@ export default function Analytics() {
           </View>
         )}
 
+        {/* AI Financial Advisor */}
+        <View style={styles.aiSection}>
+          <View style={styles.aiHeader}>
+            <MaterialCommunityIcons name="robot" size={28} color="#6C63FF" />
+            <Text style={styles.aiTitle}>AI Financial Advisor</Text>
+          </View>
+          
+          {!aiInsights ? (
+            <TouchableOpacity
+              style={styles.getInsightsButton}
+              onPress={fetchAIInsights}
+              disabled={loadingInsights}
+            >
+              {loadingInsights ? (
+                <>
+                  <ActivityIndicator color="#FFF" />
+                  <Text style={styles.getInsightsButtonText}>Analyzing...</Text>
+                </>
+              ) : (
+                <>
+                  <MaterialCommunityIcons name="lightbulb-on" size={24} color="#FFF" />
+                  <Text style={styles.getInsightsButtonText}>Get AI Insights</Text>
+                </>
+              )}
+            </TouchableOpacity>
+          ) : (
+            <View>
+              {/* Financial Health Score */}
+              <View style={styles.healthScoreCard}>
+                <Text style={styles.healthScoreLabel}>Financial Health Score</Text>
+                <Text style={styles.healthScoreValue}>
+                  {aiInsights.financial_health_score}/100
+                </Text>
+                <View style={styles.healthScoreBar}>
+                  <View
+                    style={[
+                      styles.healthScoreFill,
+                      {
+                        width: `${aiInsights.financial_health_score}%`,
+                        backgroundColor:
+                          aiInsights.financial_health_score >= 70
+                            ? '#4CAF50'
+                            : aiInsights.financial_health_score >= 40
+                            ? '#FF9800'
+                            : '#F44336',
+                      },
+                    ]}
+                  />
+                </View>
+              </View>
+
+              {/* Loan Payoff Strategy */}
+              {aiInsights.loan_payoff_strategy && (
+                <View style={styles.insightCard}>
+                  <View style={styles.insightHeader}>
+                    <MaterialCommunityIcons
+                      name="cash-fast"
+                      size={24}
+                      color="#4CAF50"
+                    />
+                    <Text style={styles.insightTitle}>Loan Payoff Strategy</Text>
+                  </View>
+                  <View style={styles.insightContent}>
+                    <View style={styles.payoffRow}>
+                      <Text style={styles.payoffLabel}>Current Timeline:</Text>
+                      <Text style={styles.payoffValue}>
+                        {aiInsights.loan_payoff_strategy.current_timeline}
+                      </Text>
+                    </View>
+                    <View style={styles.payoffRow}>
+                      <Text style={styles.payoffLabel}>Accelerated:</Text>
+                      <Text style={[styles.payoffValue, { color: '#4CAF50' }]}>
+                        {aiInsights.loan_payoff_strategy.accelerated_timeline}
+                      </Text>
+                    </View>
+                    <Text style={styles.recommendationText}>
+                      💡 {aiInsights.loan_payoff_strategy.recommendation}
+                    </Text>
+                  </View>
+                </View>
+              )}
+
+              {/* Savings Opportunities */}
+              {aiInsights.savings_opportunities &&
+                aiInsights.savings_opportunities.length > 0 && (
+                  <View style={styles.insightCard}>
+                    <View style={styles.insightHeader}>
+                      <MaterialCommunityIcons
+                        name="piggy-bank"
+                        size={24}
+                        color="#FF9800"
+                      />
+                      <Text style={styles.insightTitle}>Savings Opportunities</Text>
+                    </View>
+                    {aiInsights.savings_opportunities.map((opp: any, index: number) => (
+                      <View key={index} style={styles.savingOpportunity}>
+                        <View style={styles.savingHeader}>
+                          <Text style={styles.savingCategory}>{opp.category}</Text>
+                          <Text style={styles.savingAmount}>
+                            Save ₹{opp.savings}
+                          </Text>
+                        </View>
+                        <Text style={styles.savingTip}>
+                          Current: ₹{opp.current} → Suggested: ₹{opp.suggested}
+                        </Text>
+                        <Text style={styles.savingTipText}>{opp.tip}</Text>
+                      </View>
+                    ))}
+                  </View>
+                )}
+
+              {/* Top Recommendations */}
+              {aiInsights.top_recommendations &&
+                aiInsights.top_recommendations.length > 0 && (
+                  <View style={styles.insightCard}>
+                    <View style={styles.insightHeader}>
+                      <MaterialCommunityIcons
+                        name="star-circle"
+                        size={24}
+                        color="#6C63FF"
+                      />
+                      <Text style={styles.insightTitle}>Top Recommendations</Text>
+                    </View>
+                    {aiInsights.top_recommendations.map(
+                      (rec: string, index: number) => (
+                        <View key={index} style={styles.recommendationItem}>
+                          <Text style={styles.recommendationNumber}>
+                            {index + 1}
+                          </Text>
+                          <Text style={styles.recommendationText}>{rec}</Text>
+                        </View>
+                      )
+                    )}
+                  </View>
+                )}
+
+              {/* Future Projection */}
+              {aiInsights.future_projection && (
+                <View style={styles.insightCard}>
+                  <View style={styles.insightHeader}>
+                    <MaterialCommunityIcons
+                      name="crystal-ball"
+                      size={24}
+                      color="#2196F3"
+                    />
+                    <Text style={styles.insightTitle}>Future Projection</Text>
+                  </View>
+                  <View style={styles.projectionItem}>
+                    <Text style={styles.projectionLabel}>In 6 Months:</Text>
+                    <Text style={styles.projectionText}>
+                      {aiInsights.future_projection['6_months']}
+                    </Text>
+                  </View>
+                  <View style={styles.projectionItem}>
+                    <Text style={styles.projectionLabel}>In 1 Year:</Text>
+                    <Text style={styles.projectionText}>
+                      {aiInsights.future_projection['1_year']}
+                    </Text>
+                  </View>
+                </View>
+              )}
+
+              {/* Spending Insights */}
+              {aiInsights.spending_insights &&
+                aiInsights.spending_insights.length > 0 && (
+                  <View style={styles.insightCard}>
+                    <View style={styles.insightHeader}>
+                      <MaterialCommunityIcons
+                        name="chart-line"
+                        size={24}
+                        color="#9C27B0"
+                      />
+                      <Text style={styles.insightTitle}>Spending Insights</Text>
+                    </View>
+                    {aiInsights.spending_insights.map(
+                      (insight: string, index: number) => (
+                        <View key={index} style={styles.insightPoint}>
+                          <MaterialCommunityIcons
+                            name="chevron-right"
+                            size={20}
+                            color="#9C27B0"
+                          />
+                          <Text style={styles.insightPointText}>{insight}</Text>
+                        </View>
+                      )
+                    )}
+                  </View>
+                )}
+
+              <TouchableOpacity
+                style={styles.refreshInsightsButton}
+                onPress={fetchAIInsights}
+                disabled={loadingInsights}
+              >
+                <MaterialCommunityIcons name="refresh" size={20} color="#6C63FF" />
+                <Text style={styles.refreshInsightsText}>Refresh Insights</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
+
         {/* Income Card */}
         <View style={styles.incomeSection}>
           <View style={styles.incomeCard}>
