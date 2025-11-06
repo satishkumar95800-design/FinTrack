@@ -36,6 +36,15 @@ transactions_collection = db.transactions
 categories_collection = db.categories
 bills_collection = db.bills
 upi_payments_collection = db.upi_payments
+users_collection = db.users
+
+# Password hashing
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+# JWT settings
+SECRET_KEY = os.getenv("JWT_SECRET_KEY", "your-secret-key-change-in-production")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30 * 24 * 60  # 30 days
 
 # Models
 class Transaction(BaseModel):
