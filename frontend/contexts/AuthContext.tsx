@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as LocalAuthentication from 'expo-local-authentication';
 import Constants from 'expo-constants';
 import axios from 'axios';
 
@@ -21,6 +22,12 @@ interface AuthContextType {
   logout: () => Promise<void>;
   isAuthenticated: boolean;
   checkAuth: () => Promise<void>;
+  socialLogin: (provider: string, token: string, email: string, name: string) => Promise<void>;
+  biometricLogin: () => Promise<boolean>;
+  enableBiometric: (email: string, password: string) => Promise<void>;
+  disableBiometric: () => Promise<void>;
+  isBiometricEnabled: () => Promise<boolean>;
+  isBiometricAvailable: () => Promise<boolean>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
