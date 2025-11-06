@@ -32,6 +32,18 @@ export default function Analytics() {
     fetchPocketMoney();
   }, [transactions]);
 
+  const fetchAIInsights = async () => {
+    setLoadingInsights(true);
+    try {
+      const response = await axios.get('/api/analytics/ai-insights');
+      setAiInsights(response.data.insights);
+    } catch (error) {
+      console.error('Error fetching AI insights:', error);
+    } finally {
+      setLoadingInsights(false);
+    }
+  };
+
   const fetchPocketMoney = async () => {
     try {
       const response = await axios.get('/api/analytics/pocket-money');
